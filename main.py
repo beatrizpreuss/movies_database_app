@@ -233,6 +233,7 @@ def generate_website():
                         f'<img class="movie-poster" src={info['poster']} alt="Movie Poster" title="{info['note']}"/>'
                         f'<div class="movie-title">{title}</div>'
                         f'<div class="movie-year">{info["year"]}</div>'
+                        f'<div class="movie-year">{info["rating"]}</div>'
                         f"</div>"
                         f"</li>")
     html = open('_static/index_template.html')
