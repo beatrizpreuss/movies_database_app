@@ -1,0 +1,9 @@
+
+sqlalchemy
+statistics
+random
+operator
+matplotlib
+requests
+os
+dotenv
