@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine, text
+import emoji
 
 # Define the database URL
 DB_URL = "sqlite:///_data/movies.db"
@@ -34,7 +35,7 @@ def add_movie(title, year, rating, poster):
         try:
             connection.execute(text("INSERT INTO movies (title, year, rating, poster) VALUES (:title, :year, :rating, :poster)"),
                                {"title": title, "year": year, "rating": rating, "poster": poster})
-            print(f"Movie '{title}' added successfully.")
+            print(f"{emoji.emojize(':check_mark_button:')}Movie '{title}' added successfully.")
         except Exception as e:
             print(f"Error: {e}")
 
@@ -45,7 +46,7 @@ def delete_movie(title):
         with engine.begin() as connection:
             connection.execute(text("DELETE FROM movies WHERE title = :title"),
                                {"title": title})
-            print(f"Movie '{title}' successfully deleted.")
+            print(f"{emoji.emojize(':check_mark_button:')}Movie '{title}' successfully deleted.")
     except Exception as e:
         print(f"Error: {e}")
 
@@ -56,7 +57,7 @@ def update_movie(title, note):
         with engine.connect() as connection:
             connection.execute(text("UPDATE movies SET note = :note WHERE title = :title"),
                                {"title": title, "note": note})
-            print(f"Movie '{title}' successfully updated.")
+            print(f"{emoji.emojize(':check_mark_button:')}Movie '{title}' successfully updated.")
     except Exception as e:
         print(f"Error: {e}")
 

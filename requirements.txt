@@ -7,3 +7,4 @@ matplotlib
 requests
 os
 dotenv
+emoji

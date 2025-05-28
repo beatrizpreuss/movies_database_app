@@ -7,6 +7,7 @@ from movie_storage import movie_storage_sql as storage
 import requests
 import os
 from dotenv import load_dotenv
+import emoji
 
 
 load_dotenv()
@@ -17,9 +18,9 @@ MOVIE_URL = f'http://www.omdbapi.com/?apikey={API_KEY}&t='
 
 def menu_and_input():
     """Prints menu for action selection and returns action choice as input(int)"""
-    print("\n********** My Movies Database **********\n"
+    print(f"\n {emoji.emojize(':movie_camera:')} My Movies Database {emoji.emojize(':clapper_board:')} \n"
                             "\n"
-                            "Menu:\n"
+                            f"{emoji.emojize(':magnifying_glass_tilted_right:')}Menu:\n"
                             "0. Exit\n"
                             "1. List movies\n"
                             "2. Add movie\n"
@@ -38,7 +39,7 @@ def menu_and_input():
             user_input = int(input("\nEnter choice (0-11): "))
             return user_input
         except ValueError:
-            print("\n-- Invalid input, please enter a number between 0 and 10")
+            print(f"\n{emoji.emojize(':cross_mark:')} Invalid input, please enter a number between 0 and 10")
 
 
 def list_movies():
@@ -56,18 +57,18 @@ def add_movie():
     movie_input = (input("\nEnter new movie name: ")).title()
 
     if movie_input == "" or movie_input.isspace():
-        print("\n-- Invalid input, please enter a name")
+        print(f"\n{emoji.emojize(':cross_mark:')} Invalid input, please enter a name")
         return
 
     elif movie_input in movies.keys():
-        print("\n-- Movie already exists")
+        print(f"\n{emoji.emojize(':white_exclamation_mark:')} Movie already exists")
         return
 
     try:
         res = requests.get(f'{MOVIE_URL}{movie_input}')
         movies_resp = res.json()
     except requests.exceptions.ConnectionError:
-        print("\nPlease check your connection")
+        print(f"\n{emoji.emojize(':red_exclamation_mark:')}Please check your connection")
         return
 
     try:
@@ -78,7 +79,7 @@ def add_movie():
         poster = movies_resp['Poster']
         storage.add_movie(title, year, rating, poster)
     except (KeyError, ValueError):
-        print("\nInvalid input or movie not found")
+        print(f"\n{emoji.emojize(':cross_mark:')}Invalid input or movie not found")
 
 
 def delete_movie():
@@ -87,7 +88,7 @@ def delete_movie():
     movie_to_delete = (input("\nEnter movie name to delete: ")).title()
 
     if movie_to_delete not in movies.keys():
-        print(f"Movie {movie_to_delete} doesn't exist!")
+        print(f"{emoji.emojize(':white_exclamation_mark:')}Movie {movie_to_delete} doesn't exist!")
 
     else:
         del movies[movie_to_delete]
@@ -100,7 +101,7 @@ def update_movie():
     movie_to_update = (input("\nEnter movie name: ")).title()
 
     if movie_to_update not in movies.keys():
-        print(f"Movie {movie_to_update} doesn't exist!")
+        print(f"{emoji.emojize(':white_exclamation_mark:')}Movie {movie_to_update} doesn't exist!")
 
     else:
         note = input("Enter movie note: ")
@@ -165,7 +166,7 @@ def sorted_movies():
             for movie, info in sorted_dict.items():
                 print(f"{movie} ({info['year']}): {info['rating']}")
         else:
-            print("\n-- Invalid input")
+            print(f"\n{emoji.emojize(':cross_mark:')} Invalid input")
 
     elif what_to_sort == "r" or what_to_sort == "rating":
         sorted_dict = dict(sorted(movies.items(), key=lambda item: itemgetter('rating')(item[1]), reverse = True))
@@ -173,7 +174,7 @@ def sorted_movies():
             print(f"{movie} ({info['year']}): {info['rating']}")
 
     else:
-        print("\n-- Invalid input")
+        print(f"\n{emoji.emojize(':cross_mark:')} Invalid input")
 
 
 def histogram():
@@ -220,7 +221,7 @@ def filter_movies():
                 print(f"{movie} ({info['year']}): {info['rating']}")
 
     except ValueError:
-        print("\n-- Invalid input")
+        print(f"\n{emoji.emojize(':cross_mark:')} Invalid input")
 
 
 def generate_website():
@@ -241,7 +242,7 @@ def generate_website():
     replace = original_html.replace("__TEMPLATE_MOVIE_GRID__", my_movies)
     with open("_static/index.html", "w") as new_html:
         new_html.write(replace)
-    print("Website was generated successfully")
+    print(f"{emoji.emojize(':check_mark_button:')}Website was generated successfully")
 
 
 def main():
@@ -264,13 +265,13 @@ def main():
     while user_input <= 11:
         user_input = menu_and_input()
         if user_input == 0:
-            print("Bye!")
+            print(f"Bye!{emoji.emojize(':waving_hand:')}")
             break
         if user_input in actions:
             actions[user_input]()
             input("\nPress enter to continue")
         else:
-            print("\n-- Invalid choice, please enter a number between 0 and 10")
+            print(f"\n{emoji.emojize(':cross_mark:')} Invalid choice, please enter a number between 0 and 10")
 
 
 if __name__ == "__main__":
