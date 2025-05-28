@@ -13,7 +13,8 @@ with engine.begin() as connection:
             title TEXT UNIQUE NOT NULL,
             year INTEGER NOT NULL,
             rating REAL NOT NULL,
-            poster TEXT
+            poster TEXT,
+            note TEXT
         )
     """))
 
@@ -49,12 +50,12 @@ def delete_movie(title):
         print(f"Error: {e}")
 
 
-def update_movie(title, rating):
-    """Update a movie's rating in the database."""
+def update_movie(title, note):
+    """Update a movie's note in the database."""
     try:
         with engine.connect() as connection:
-            connection.execute(text("UPDATE movies SET rating = :rating WHERE title = :title"),
-                               {"title": title, "rating": rating})
+            connection.execute(text("UPDATE movies SET note = :note WHERE title = :title"),
+                               {"title": title, "note": note})
             print(f"Movie '{title}' successfully updated.")
     except Exception as e:
         print(f"Error: {e}")
@@ -63,7 +64,7 @@ def update_movie(title, rating):
 def get_movies_for_website():
     """Retrieve all movies from the database."""
     with engine.begin() as connection:
-        result = connection.execute(text("SELECT title, year, rating, poster FROM movies"))
+        result = connection.execute(text("SELECT title, year, rating, poster, note FROM movies"))
         movies = result.fetchall()
 
-    return {row[0]: {"year": row[1], "rating": row[2], "poster": row[3]} for row in movies}
+    return {row[0]: {"year": row[1], "rating": row[2], "poster": row[3], "note": row[4]} for row in movies}

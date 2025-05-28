@@ -77,7 +77,6 @@ def add_movie():
         rating = float(rating_str.split("/")[0])
         poster = movies_resp['Poster']
         storage.add_movie(title, year, rating, poster)
-        print("\n-- New movie added!")
     except (KeyError, ValueError):
         print("\nInvalid input or movie not found")
 
@@ -93,7 +92,6 @@ def delete_movie():
     else:
         del movies[movie_to_delete]
         storage.delete_movie(movie_to_delete)
-        print("\n-- Movie deleted!")
 
 
 def update_movie():
@@ -105,11 +103,10 @@ def update_movie():
         print(f"Movie {movie_to_update} doesn't exist!")
 
     else:
-        new_rating = float(input("Enter new movie rating: "))
-        movies[movie_to_update]["rating"] = new_rating
+        note = input("Enter movie note: ")
+        movies[movie_to_update]["note"] = note
 
-        storage.update_movie(movie_to_update, new_rating)
-        print("\n-- Movie updated!")
+        storage.update_movie(movie_to_update, note)
 
 
 def stats():
@@ -233,7 +230,7 @@ def generate_website():
     for title, info in movie_info.items():
         my_movies += (f'<li>'
                         f'<div class="movie">'
-                        f'<img class="movie-poster" src={info['poster']} title=""/>'
+                        f'<img class="movie-poster" src={info['poster']} alt="Movie Poster" title="{info['note']}"/>'
                         f'<div class="movie-title">{title}</div>'
                         f'<div class="movie-year">{info["year"]}</div>'
                         f"</div>"
