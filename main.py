@@ -39,7 +39,7 @@ def menu_and_input():
             user_input = int(input("\nEnter choice (0-11): "))
             return user_input
         except ValueError:
-            print(f"\n{emoji.emojize(':cross_mark:')} Invalid input, please enter a number between 0 and 10")
+            print(f"\n{emoji.emojize(':cross_mark:')} Invalid input, please enter a number between 0 and 11")
 
 
 def list_movies():
@@ -54,7 +54,7 @@ def list_movies():
 def add_movie():
     """Adds new movie and info to database based on API info fetched"""
     movies = storage.list_movies()
-    movie_input = (input("\nEnter new movie name: ")).title()
+    movie_input = (input("\nEnter new movie name: ")).strip()
 
     if movie_input == "" or movie_input.isspace():
         print(f"\n{emoji.emojize(':cross_mark:')} Invalid input, please enter a name")
@@ -85,18 +85,23 @@ def add_movie():
 def delete_movie():
     """Asks user which movie to delete (name) and deletes it from database"""
     movies = storage.list_movies()
-    movie_to_delete = (input("\nEnter movie name to delete: ")).title()
+    movie_to_delete = (input("\nEnter movie name to delete: ")).strip().lower()
 
-    if movie_to_delete not in movies.keys():
+    matched_title = None
+    for title in movies:
+        if title.lower() == movie_to_delete:
+            matched_title = title
+            break
+
+    if matched_title is None:
         print(f"{emoji.emojize(':white_exclamation_mark:')}Movie {movie_to_delete} doesn't exist!")
 
     else:
-        del movies[movie_to_delete]
-        storage.delete_movie(movie_to_delete)
+        storage.delete_movie(matched_title)
 
 
 def update_movie():
-    """Updates movie rating based on user input"""
+    """Updates movie note (tooltip) based on user input"""
     movies = storage.list_movies()
     movie_to_update = (input("\nEnter movie name: ")).title()
 
@@ -114,10 +119,8 @@ def stats():
     """Calculates the average and median of all movie ratings in the database,
     and prints the best and worst movies based on ratings"""
     movies = storage.list_movies()
-    ratings = []
 
-    for info in movies.values():
-        ratings.append(info["rating"])
+    ratings = [info["rating"] for info in movies.values()]
 
     average = round(statistics.mean(ratings), 1)
     median = round(statistics.median(ratings), 1)
@@ -226,10 +229,10 @@ def filter_movies():
 
 def generate_website():
     """ Creates website from database info """
-    my_movies = ""
+    movie_items = []
     movie_info = storage.get_movies_for_website()
     for title, info in movie_info.items():
-        my_movies += (f'<li>'
+        movie_html =  (f'<li>'
                         f'<div class="movie">'
                         f'<img class="movie-poster" src={info['poster']} alt="Movie Poster" title="{info['note']}"/>'
                         f'<div class="movie-title">{title}</div>'
@@ -237,6 +240,9 @@ def generate_website():
                         f'<div class="movie-year">{info["rating"]}</div>'
                         f"</div>"
                         f"</li>")
+        movie_items.append(movie_html)
+    my_movies = '\n'.join(movie_items)
+
     html = open('_static/index_template.html')
     original_html = html.read()
     replace = original_html.replace("__TEMPLATE_MOVIE_GRID__", my_movies)
@@ -271,7 +277,7 @@ def main():
             actions[user_input]()
             input("\nPress enter to continue")
         else:
-            print(f"\n{emoji.emojize(':cross_mark:')} Invalid choice, please enter a number between 0 and 10")
+            print(f"\n{emoji.emojize(':cross_mark:')} Invalid choice, please enter a number between 0 and 11")
 
 
 if __name__ == "__main__":

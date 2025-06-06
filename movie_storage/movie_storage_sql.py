@@ -54,7 +54,7 @@ def delete_movie(title):
 def update_movie(title, note):
     """Update a movie's note in the database."""
     try:
-        with engine.connect() as connection:
+        with engine.begin() as connection:
             connection.execute(text("UPDATE movies SET note = :note WHERE title = :title"),
                                {"title": title, "note": note})
             print(f"{emoji.emojize(':check_mark_button:')}Movie '{title}' successfully updated.")
